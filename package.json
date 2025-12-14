@@ -1,0 +1,28 @@
+{
+  "name": "chord-bunny",
+  "version": "0.1.0",
+  "description": "A practice tool for guitar, piano, and singing.",
+  "keywords": [
+    "node",
+    "javascript",
+    "guitar",
+    "piano",
+    "sining",
+    "practice-tool"
+  ],
+  "homepage": "https://github.com/lihuang1047/chord-bunny#readme",
+  "bugs": {
+    "url": "https://github.com/lihuang1047/chord-bunny/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lihuang1047/chord-bunny.git"
+  },
+  "license": "ISC",
+  "author": "Li Huang",
+  "type": "module",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  }
+}
