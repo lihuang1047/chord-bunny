@@ -4,91 +4,84 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chord Bunny</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="src/css/styles.css">
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body>
     <div class="app-container">
         <header class="app-header">
-            <h1>🎵 Chord Bunny</h1>
-            <p>Practice your chord progressions</p>
+            <h1>Chord Bunny</h1>
+            <p>Practice your chord changes</p>
         </header>
         
         <div class="app-content">
-            <main class="main-content">
-                <div class="chord-display-container">
-                    <div class="chord-display">
-                        <div class="current-chord" id="currentChord">C</div>
-                        <div class="chord-separator">→</div>
-                        <div class="next-chord" id="nextChord">G</div>
+            <main class="chord-display-container">
+                <div class="timer-display" id="timerDisplay">1:00</div>
+                <div class="round-display" id="roundDisplay">Round 1 of 4</div>
+                <div class="chord-display">
+                    <div class="chord-pair">
+                        <div class="chord-symbol" id="currentChord">C</div>
+                        <img id="currentChordImage" src="src/assets/chords/C.png" alt="Current Chord" class="chord-image">
                     </div>
-                    
-                    <div class="chord-charts-container">
-                        <div class="chord-chart">
-                            <h4>Current Chord</h4>
-                            <img id="currentChordImage" src="chords/C.png" alt="Current Chord" class="chord-image">
-                        </div>
-                        <div class="chord-chart">
-                            <h4>Next Chord</h4>
-                            <img id="nextChordImage" src="chords/G.png" alt="Next Chord" class="chord-image">
-                        </div>
+                    <div class="chord-separator">→</div>
+                    <div class="chord-pair">
+                        <div class="chord-symbol" id="nextChord">G</div>
+                        <img id="nextChordImage" src="src/assets/chords/G.png" alt="Next Chord" class="chord-image">
                     </div>
                 </div>
-
-                
-                <div class="chord-progressions">
-                    <h3>Common Progressions</h3>
-                    <div class="progression-buttons">
-                        <button class="progression-btn" data-progression="C,G,Am,F">I-V-vi-IV (Pop)</button>
-                        <button class="progression-btn" data-progression="C,Em,Am,F">I-iii-vi-IV</button>
-                        <button class="progression-btn" data-progression="C,Am,F,G">I-vi-IV-V</button>
-                    </div>
+                <div class="button-controls">
+                    <button id="startBtn" class="btn btn-primary">Start</button>
+                    <button id="nextBtn" class="btn">Change Chords</button>
                 </div>
             </main>
             
             <aside class="sidebar">
                 <div class="controls">
-                    <h3>Metronome Controls</h3>
-                    <div class="control-group">
-                        <label for="bpm">BPM: <span id="bpmValue">120</span></label>
-                        <input type="range" id="bpm" min="40" max="200" value="120">
+                    <div class="round-controls">
+                        <h3>Round Controls</h3>
+                        <div class="control-group">
+                            <label for="roundDuration">Round Duration (seconds):</label>
+                            <input type="number" id="roundDuration" min="5" max="300" value="60" step="5">
+                        </div>
+                        
+                        <div class="control-group">
+                            <label for="totalRounds">Number of Rounds:</label>
+                            <input type="number" id="totalRounds" min="1" max="100" value="4" step="1">
+                        </div>
+                        
                     </div>
-                    
-                    <div class="control-group">
-                        <label for="chordDuration">Change chord every (beats):</label>
-                        <select id="chordDuration">
-                            <option value="1">1 beat</option>
-                            <option value="2">2 beats</option>
-                            <option value="4" selected>4 beats</option>
-                            <option value="8">8 beats</option>
-                        </select>
+
+                    <div class="metronome-controls">
+                        <h3>Metronome Controls</h3>
+                        <div class="control-group">
+                            <label for="bpm">BPM: <span id="bpmValue">60</span></label>
+                            <input type="range" id="bpm" min="20" max="200" value="60">
+                            <div class="metronome-visualization">
+                                <div class="beat-dot" data-beat="1"></div>
+                                <div class="beat-dot" data-beat="2"></div>
+                                <div class="beat-dot" data-beat="3"></div>
+                                <div class="beat-dot" data-beat="4"></div>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="button-group">
-                        <button id="startBtn" class="btn btn-primary">Start</button>
-                        <button id="stopBtn" class="btn" disabled>Stop</button>
-                        <button id="nextBtn" class="btn">Next Chord</button>
+
+                    <div class="chord-controls">
+                        <h3>Chord Controls</h3>
+                        <div class="control-group">
+                            <label for="chordProgression">Chord Progression:</label>
+                            <select id="chordProgression">
+                                <!-- Options will be populated dynamically -->
+                            </select>
+                        </div>
+                        <p class="chord-hint">Select chords to include in your practice:</p>
+                        <div class="chord-selector" id="chordSelector">
+                            <!-- Chords will be dynamically added here -->
+                        </div>
                     </div>
-                </div>
-                
-                <div class="instructions">
-                    <h3>How to Use</h3>
-                    <ul>
-                        <li>Set your desired BPM using the slider</li>
-                        <li>Choose how often chords change</li>
-                        <li>Click Start or press Space to begin</li>
-                        <li>Use arrow keys or N for next chord</li>
-                        <li>Press Escape to stop</li>
-                    </ul>
-                </div>
             </aside>
         </div>
-        
-        <footer class="app-footer">
-            <p>Press Start to begin practicing. Change the BPM to match your desired speed.</p>
-        </footer>
     </div>
     
-    <script src="index.js"></script>
+    <script type="module" src="src/js/app.js"></script>
 </body>
 </html>
