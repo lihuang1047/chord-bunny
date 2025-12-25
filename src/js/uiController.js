@@ -68,6 +68,12 @@ export class UIController {
                 this.totalRoundsInput.value = 1;
             }
         });
+
+        // Update timer display when round duration changes
+        this.roundDurationInput.addEventListener('change', () => {
+            const duration = parseInt(this.roundDurationInput.value) || 60;
+            this.updateTimerDisplay(duration);
+        });
     }
 
     /**
