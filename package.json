@@ -18,7 +18,7 @@
     "type": "git",
     "url": "git+https://github.com/lihuang1047/chord-bunny.git"
   },
-  "license": "ISC",
+  "license": "AGPL-3.0-only",
   "author": "Li Huang",
   "type": "module",
   "main": "index.js",
