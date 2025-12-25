@@ -1,12 +1,25 @@
 import { progressionOptions, progressions } from './chordData.js';
 import { ErrorHandler } from './errorHandler.js';
 
+/**
+ * UIController handles all UI interactions and updates for the Chord Bunny application.
+ * It manages the DOM elements, event listeners, and provides methods to update the UI
+ * based on the application state.
+ */
 export class UIController {
+    /**
+     * Creates a new UIController instance.
+     * Initializes DOM elements and sets up event listeners.
+     */
     constructor() {
         this.initializeElements();
         this.setupEventListeners();
     }
 
+    /**
+     * Initializes and caches references to all required DOM elements.
+     * Logs errors if critical elements are not found.
+     */
     initializeElements() {
         // DOM Elements
         this.currentChordEl = document.getElementById('currentChord');
@@ -33,6 +46,10 @@ export class UIController {
         }
     }
 
+    /**
+     * Sets up all necessary event listeners for user interactions.
+     * Includes BPM input, chord progression changes, and round settings.
+     */
     setupEventListeners() {
         // Update BPM display
         this.bpmInput.addEventListener('input', () => {
@@ -53,6 +70,10 @@ export class UIController {
         });
     }
 
+    /**
+     * Populates the chord progression dropdown with available options.
+     * Sets the default selection to 'basic' progression.
+     */
     populateProgressionDropdown() {
         console.log('Populating progression dropdown...');
         console.log('chordProgression:', this.chordProgression);
@@ -81,6 +102,10 @@ export class UIController {
         console.log('Dropdown populated with', this.chordProgression.options.length, 'options');
     }
 
+    /**
+     * Updates the chord selection interface based on the selected progression.
+     * Creates checkboxes for each chord in the current progression.
+     */
     updateChordLibrary() {
         const selectedProgression = this.chordProgression.value;
         const chordsToShow = progressions[selectedProgression] || [];
@@ -109,11 +134,21 @@ export class UIController {
         });
     }
 
+    /**
+     * Retrieves an array of currently selected chord names.
+     * @returns {string[]} Array of selected chord names
+     */
     getSelectedChords() {
         const checkboxes = document.querySelectorAll('input[name="chord"]:checked');
         return Array.from(checkboxes).map(cb => cb.value);
     }
 
+    /**
+     * Updates the chord display with the current and next chord.
+     * Applies animation effects to the display.
+     * @param {string} currentChord - The current chord to display
+     * @param {string} nextChord - The next upcoming chord
+     */
     updateChordDisplay(currentChord, nextChord) {
         this.currentChordEl.textContent = currentChord;
         this.nextChordEl.textContent = nextChord;
@@ -127,6 +162,11 @@ export class UIController {
         }, 100);
     }
 
+    /**
+     * Updates the timer display with the given number of seconds.
+     * Formats the time as MM:SS.
+     * @param {number} seconds - Total seconds to display
+     */
     updateTimerDisplay(seconds) {
         const timerDisplay = document.getElementById('timerDisplay');
         if (timerDisplay) {
@@ -136,12 +176,20 @@ export class UIController {
         }
     }
 
+    /**
+     * Updates the round display text.
+     * @param {string} roundText - Text to display for the current round
+     */
     updateRoundDisplay(roundText) {
         if (this.roundDisplay) {
             this.roundDisplay.textContent = roundText;
         }
     }
 
+    /**
+     * Updates the play/pause button state and appearance.
+     * @param {boolean} isPlaying - Whether the player is currently playing
+     */
     updateToggleButton(isPlaying) {
         if (isPlaying) {
             this.startBtn.textContent = 'Stop';
@@ -156,6 +204,11 @@ export class UIController {
         }
     }
 
+    /**
+     * Gets the current BPM value from the input field.
+     * Validates the input and returns a default if invalid.
+     * @returns {number} The current BPM value (20-200)
+     */
     getBPM() {
         const bpm = parseInt(this.bpmInput.value);
         if (!ErrorHandler.validateInput(bpm, 20, 200, 'BPM')) {
@@ -164,6 +217,11 @@ export class UIController {
         return bpm;
     }
 
+    /**
+     * Gets the round duration in seconds from the input field.
+     * Validates the input and returns a default if invalid.
+     * @returns {number} The round duration in seconds (5-300)
+     */
     getRoundDuration() {
         const duration = parseInt(this.roundDurationInput.value);
         if (!ErrorHandler.validateInput(duration, 5, 300, 'Round duration')) {
@@ -172,6 +230,11 @@ export class UIController {
         return duration;
     }
 
+    /**
+     * Gets the total number of rounds from the input field.
+     * Validates the input and returns a default if invalid.
+     * @returns {number} The total number of rounds (1-100)
+     */
     getTotalRounds() {
         const rounds = parseInt(this.totalRoundsInput.value) || 4;
         if (!ErrorHandler.validateInput(rounds, 1, 100, 'Number of rounds')) {
@@ -180,14 +243,27 @@ export class UIController {
         return rounds;
     }
 
+    /**
+     * Registers a callback for the start/stop button click event.
+     * @param {Function} callback - Function to call when start/stop is clicked
+     */
     onStart(callback) {
         this.startBtn.addEventListener('click', callback);
     }
 
+    /**
+     * Registers a callback for the next chord button click event.
+     * @param {Function} callback - Function to call when next chord is clicked
+     */
     onNextChord(callback) {
         this.nextBtn.addEventListener('click', callback);
     }
 
+    /**
+     * Registers a callback for chord selection changes.
+     * Ensures at least one chord remains selected.
+     * @param {Function} callback - Function to call when chord selection changes
+     */
     onChordSelectionChange(callback) {
         // Use event delegation for dynamically created checkboxes
         this.chordSelector.addEventListener('change', (e) => {
