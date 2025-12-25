@@ -62,20 +62,20 @@ export class UIController {
         });
 
         // Update total rounds
-        this.totalRoundsInput.addEventListener('change', () => {
-            let totalRounds = parseInt(this.totalRoundsInput.value) || 4;
+        this.totalRoundsInput.addEventListener('input', () => {
+            let totalRounds = parseInt(this.totalRoundsInput.value) || 1;
             if (totalRounds < 1) {
                 totalRounds = 1;
                 this.totalRoundsInput.value = 1;
             }
-            // Update round display when total rounds change
+            // Update round display in real-time
             if (this.roundDisplay) {
                 this.roundDisplay.textContent = `Round 1 of ${totalRounds}`;
             }
         });
 
-        // Update timer display when round duration changes
-        this.roundDurationInput.addEventListener('change', () => {
+        // Update timer display in real-time
+        this.roundDurationInput.addEventListener('input', () => {
             const duration = parseInt(this.roundDurationInput.value) || 60;
             this.updateTimerDisplay(duration);
         });
