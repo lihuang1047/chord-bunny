@@ -63,9 +63,14 @@ export class UIController {
 
         // Update total rounds
         this.totalRoundsInput.addEventListener('change', () => {
-            const totalRounds = parseInt(this.totalRoundsInput.value) || 4;
+            let totalRounds = parseInt(this.totalRoundsInput.value) || 4;
             if (totalRounds < 1) {
+                totalRounds = 1;
                 this.totalRoundsInput.value = 1;
+            }
+            // Update round display when total rounds change
+            if (this.roundDisplay) {
+                this.roundDisplay.textContent = `Round 1 of ${totalRounds}`;
             }
         });
 
