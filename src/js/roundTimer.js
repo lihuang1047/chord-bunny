@@ -1,4 +1,13 @@
+/**
+ * RoundTimer manages the timing and progression of practice rounds.
+ * It handles countdown timing, round progression, and event callbacks
+ * for time updates and round completion.
+ */
 export class RoundTimer {
+    /**
+     * Creates a new RoundTimer instance.
+     * Initializes timer state with default values.
+     */
     constructor() {
         this.roundTimer = null;
         this.timeLeft = 60;
@@ -9,6 +18,12 @@ export class RoundTimer {
         this.onAllRoundsComplete = null;
     }
 
+    /**
+     * Starts the round timer with the specified duration and total rounds.
+     * Begins countdown and manages round progression.
+     * @param {number} durationInSeconds - Duration of each round in seconds
+     * @param {number} totalRounds - Total number of rounds to complete
+     */
     start(durationInSeconds, totalRounds) {
         this.timeLeft = durationInSeconds;
         this.currentRound = 1;
@@ -43,6 +58,10 @@ export class RoundTimer {
         }, 1000);
     }
 
+    /**
+     * Stops the timer and resets the current round.
+     * Clears any active intervals and resets timer state.
+     */
     stop() {
         if (this.roundTimer) {
             clearInterval(this.roundTimer);
@@ -52,6 +71,11 @@ export class RoundTimer {
         this.timeLeft = 0;
     }
 
+    /**
+     * Resets the timer with a new duration.
+     * Stops any running timer and updates the time left.
+     * @param {number} durationInSeconds - New duration in seconds to reset the timer to
+     */
     reset(durationInSeconds) {
         this.stop();
         this.timeLeft = durationInSeconds;
@@ -60,12 +84,21 @@ export class RoundTimer {
         }
     }
 
+    /**
+     * Formats seconds into a MM:SS string.
+     * @param {number} seconds - Total seconds to format
+     * @returns {string} Formatted time string (e.g., '01:30')
+     */
     formatTime(seconds) {
         const minutes = Math.floor(seconds / 60);
         const remainingSeconds = seconds % 60;
         return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
     }
 
+    /**
+     * Gets a formatted string showing the current round and total rounds.
+     * @returns {string} Formatted round display (e.g., 'Round 2 of 4') or empty string if no rounds
+     */
     getRoundDisplay() {
         if (this.totalRounds > 0) {
             return `Round ${this.currentRound} of ${this.totalRounds}`;
