@@ -44,21 +44,28 @@ export const progressionOptions = [
     {
         value: 'basic',
         displayText: 'Basic Chords',
+        type: 'random', // Basic allows user selection and random ordering
         chords: allChords.filter(chord => availableChords.includes(chord.name))
     },
     {
         value: 'pop',
         displayText: 'Pop',
-        chords: allChords.filter(chord => ['C', 'G', 'Am', 'F'].includes(chord.name))
+        type: 'ordered', // Ordered progressions follow fixed sequences
+        sequence: ['C', 'F', 'G', 'Am'], // Fixed order for pop progression
+        chords: allChords.filter(chord => ['C', 'F', 'G', 'Am'].includes(chord.name))
     },
     {
         value: 'rock',
         displayText: 'Rock',
+        type: 'ordered',
+        sequence: ['C', 'G', 'F'], // Fixed order for rock progression
         chords: allChords.filter(chord => ['C', 'G', 'F'].includes(chord.name))
     },
     {
         value: 'christianWorship',
         displayText: 'Christian Worship',
+        type: 'ordered',
+        sequence: ['G', 'Em', 'C'], // Fixed order for Christian worship progression
         chords: allChords.filter(chord => ['G', 'Em', 'C'].includes(chord.name))
     }
 ];

@@ -115,17 +115,39 @@ export class UIController {
 
     /**
      * Updates the chord selection interface based on the selected progression.
-     * Creates checkboxes for each chord in the current progression.
+     * For Basic progression: Creates checkboxes for user selection
+     * For ordered progressions: Shows read-only chord sequence
      */
     updateChordLibrary() {
         const selectedProgression = this.chordProgression.value;
-        const chordsToShow = progressions[selectedProgression] || [];
+        const progression = progressionOptions.find(p => p.value === selectedProgression);
         
-        // Clear existing checkboxes
+        if (!progression) return;
+        
+        // Clear existing content
         this.chordSelector.innerHTML = '';
         
-        // Create checkboxes for chords
-        chordsToShow.forEach((chord) => {
+        // Update chord hint visibility based on progression type
+        const chordHint = document.querySelector('.chord-hint');
+        if (chordHint) {
+            chordHint.style.display = progression.type === 'random' ? 'block' : 'none';
+        }
+        
+        if (progression.type === 'random') {
+            // Basic progression - show checkboxes for user selection
+            this.createChordCheckboxes(progression.chords);
+        } else {
+            // Ordered progression - show read-only sequence
+            this.createChordSequence(progression.sequence);
+        }
+    }
+
+    /**
+     * Creates interactive checkboxes for chord selection (Basic progression).
+     * @param {Array} chords - Array of chord objects to create checkboxes for
+     */
+    createChordCheckboxes(chords) {
+        chords.forEach((chord) => {
             const label = document.createElement('label');
             label.className = 'chord-option';
             
@@ -143,6 +165,27 @@ export class UIController {
             label.appendChild(chordLabel);
             this.chordSelector.appendChild(label);
         });
+    }
+
+    /**
+     * Creates a read-only display of the chord sequence (ordered progressions).
+     * @param {Array} sequence - Array of chord names in order
+     */
+    createChordSequence(sequence) {
+        const sequenceDisplay = document.createElement('div');
+        sequenceDisplay.className = 'chord-sequence';
+        
+        const sequenceText = document.createElement('p');
+        sequenceText.innerHTML = 'Progression order: <br>';
+        
+        const chordList = document.createElement('span');
+        chordList.className = 'chord-list';
+        chordList.textContent = sequence.join(' → ');
+        
+        sequenceText.appendChild(chordList);
+        sequenceDisplay.appendChild(sequenceText);
+        
+        this.chordSelector.appendChild(sequenceDisplay);
     }
 
     /**
@@ -272,21 +315,36 @@ export class UIController {
 
     /**
      * Registers a callback for chord selection changes.
-     * Ensures at least one chord remains selected.
+     * Only works for Basic (random) progressions.
+     * Ensures at least two chords remain selected.
      * @param {Function} callback - Function to call when chord selection changes
      */
     onChordSelectionChange(callback) {
         // Use event delegation for dynamically created checkboxes
         this.chordSelector.addEventListener('change', (e) => {
             if (e.target.type === 'checkbox') {
-                const selectedChords = this.getSelectedChords();
-                if (selectedChords.length === 0) {
-                    e.target.checked = true; // Re-check the current one
-                    alert('At least one chord must be selected');
-                    return;
+                // Check if we're currently on Basic progression
+                const selectedProgression = this.chordProgression.value;
+                const progression = progressionOptions.find(p => p.value === selectedProgression);
+                
+                if (progression && progression.type === 'random') {
+                    const selectedChords = this.getSelectedChords();
+                    if (selectedChords.length < 2) {
+                        e.target.checked = true; // Re-check the current one
+                        alert('At least two chords must be selected for practice');
+                        return;
+                    }
+                    callback(selectedChords);
                 }
-                callback(selectedChords);
             }
         });
+    }
+
+    /**
+     * Registers a callback for progression dropdown changes.
+     * @param {Function} callback - Function to call when progression selection changes
+     */
+    onProgressionChange(callback) {
+        this.chordProgression.addEventListener('change', callback);
     }
 }

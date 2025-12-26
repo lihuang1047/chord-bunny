@@ -352,7 +352,36 @@ select {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
     gap: 8px;
-    margin-top: 0.5rem;
+    margin-top: 12px;
+    padding: 16px;
+    background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+}
+
+/* Chord sequence display for ordered progressions */
+.chord-sequence {
+    grid-column: 1 / -1;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+    margin: 0;
+    text-align: center;
+}
+
+.chord-sequence p {
+    margin: 0;
+    font-size: 14px;
+    color: #64748b;
+    font-weight: 500;
+}
+
+.chord-list {
+    color: #1e293b;
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: 0.5px;
 }
 
 .chord-option {

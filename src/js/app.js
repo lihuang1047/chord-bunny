@@ -2,7 +2,7 @@ import { Metronome } from './metronome.js';
 import { ChordManager } from './chordManager.js';
 import { RoundTimer } from './roundTimer.js';
 import { UIController } from './uiController.js';
-import { availableChords } from './chordData.js';
+import { availableChords, progressionOptions } from './chordData.js';
 
 /**
  * Main application class for the Chord Bunny practice app.
@@ -50,6 +50,9 @@ class ChordBunnyApp {
         this.uiController.onChordSelectionChange((selectedChords) => {
             this.generateNewProgression(selectedChords);
         });
+        this.uiController.onProgressionChange(() => {
+            this.initializeProgression();
+        });
 
         // Initialize UI
         this.uiController.populateProgressionDropdown();
@@ -57,8 +60,50 @@ class ChordBunnyApp {
         this.uiController.updateTimerDisplay(this.uiController.getRoundDuration());
         this.uiController.updateRoundDisplay(this.roundTimer.getRoundDisplay());
 
+        // Initialize with Basic progression
+        this.initializeProgression();
+
         this.setupKeyboardShortcuts();
         this.setupAudioInit();
+    }
+
+    /**
+     * Initializes the progression based on the currently selected progression type.
+     * Called during app initialization and when progression type changes.
+     */
+    initializeProgression() {
+        const selectedProgression = this.uiController.chordProgression.value;
+        const progression = progressionOptions.find(p => p.value === selectedProgression);
+        
+        if (!progression) return;
+        
+        if (progression.type === 'ordered') {
+            // Use the fixed sequence for ordered progressions
+            this.chordManager.setProgression(progression, 'ordered');
+        } else {
+            // For Basic progression, use all selected chords
+            const selectedChords = this.uiController.getSelectedChords();
+            this.generateNewProgression(selectedChords);
+        }
+        
+        // Update display with first chords
+        const firstChord = this.chordManager.currentProgression[0];
+        let secondChord = this.chordManager.currentProgression[1] || this.chordManager.currentProgression[0];
+        
+        // Ensure first and second chords are different for random progressions
+        if (this.chordManager.progressionType === 'random' && this.chordManager.currentProgression.length > 1) {
+            if (secondChord === firstChord) {
+                // Find a different chord
+                for (let i = 0; i < this.chordManager.currentProgression.length; i++) {
+                    if (this.chordManager.currentProgression[i] !== firstChord) {
+                        secondChord = this.chordManager.currentProgression[i];
+                        break;
+                    }
+                }
+            }
+        }
+        
+        this.updateChordDisplay(firstChord, secondChord);
     }
 
     /**
@@ -125,7 +170,20 @@ class ChordBunnyApp {
         
         // Show first chord without advancing
         const firstChord = this.chordManager.currentProgression[0];
-        const secondChord = this.chordManager.currentProgression[1] || this.chordManager.currentProgression[0];
+        let secondChord = this.chordManager.currentProgression[1] || this.chordManager.currentProgression[0];
+        
+        // Ensure first and second chords are different for random progressions
+        if (this.chordManager.progressionType === 'random' && this.chordManager.currentProgression.length > 1) {
+            if (secondChord === firstChord) {
+                // Find a different chord
+                for (let i = 0; i < this.chordManager.currentProgression.length; i++) {
+                    if (this.chordManager.currentProgression[i] !== firstChord) {
+                        secondChord = this.chordManager.currentProgression[i];
+                        break;
+                    }
+                }
+            }
+        }
         
         this.updateChordDisplay(firstChord, secondChord);
         
@@ -196,30 +254,31 @@ class ChordBunnyApp {
     }
 
     /**
-     * Generates a new chord progression from selected chords.
-     * Filters to available chords with images and creates a 4-chord progression.
+     * Generates a new chord progression from selected chords (Basic progression only).
+     * Uses the ChordManager's generateRandomProgression method.
      * @param {string[]} selectedChords - Array of chord names selected by the user
      */
     generateNewProgression(selectedChords) {
-        // Filter to only available chords (those with images)
-        const availableSelectedChords = selectedChords.filter(chord => availableChords.includes(chord));
-        
-        if (availableSelectedChords.length === 0) {
-            // Fallback to basic chords if none of the selected chords have images
-            this.chordManager.setProgression(['C', 'G', 'Am', 'F']);
-        } else {
-            // Generate a 4-chord progression from available selected chords
-            const progression = [];
-            for (let i = 0; i < 4; i++) {
-                const randomIndex = Math.floor(Math.random() * availableSelectedChords.length);
-                progression.push(availableSelectedChords[randomIndex]);
-            }
-            this.chordManager.setProgression(progression);
-        }
+        // Use the ChordManager's new method for generating random progressions
+        this.chordManager.generateRandomProgression(selectedChords);
         
         // Update display with new progression
         const firstChord = this.chordManager.currentProgression[0];
-        const secondChord = this.chordManager.currentProgression[1] || this.chordManager.currentProgression[0];
+        let secondChord = this.chordManager.currentProgression[1] || this.chordManager.currentProgression[0];
+        
+        // Ensure first and second chords are different for random progressions
+        if (this.chordManager.progressionType === 'random' && this.chordManager.currentProgression.length > 1) {
+            if (secondChord === firstChord) {
+                // Find a different chord
+                for (let i = 0; i < this.chordManager.currentProgression.length; i++) {
+                    if (this.chordManager.currentProgression[i] !== firstChord) {
+                        secondChord = this.chordManager.currentProgression[i];
+                        break;
+                    }
+                }
+            }
+        }
+        
         this.updateChordDisplay(firstChord, secondChord);
         
         // Restart if currently playing
