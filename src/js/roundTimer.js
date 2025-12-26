@@ -85,17 +85,6 @@ export class RoundTimer {
     }
 
     /**
-     * Formats seconds into a MM:SS string.
-     * @param {number} seconds - Total seconds to format
-     * @returns {string} Formatted time string (e.g., '01:30')
-     */
-    formatTime(seconds) {
-        const minutes = Math.floor(seconds / 60);
-        const remainingSeconds = seconds % 60;
-        return `${minutes}:${remainingSeconds < 10 ? '0' : ''}${remainingSeconds}`;
-    }
-
-    /**
      * Gets a formatted string showing the current round and total rounds.
      * @returns {string} Formatted round display (e.g., 'Round 2 of 4') or empty string if no rounds
      */
